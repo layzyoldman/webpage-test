@@ -56,6 +56,7 @@ Detailed guides live in [`.agents/`](.agents/): [content model](.agents/content-
 | Localized queries / fallback logic | `src/lib/content.ts` |
 | Page bodies | `src/views/*.astro` (routes in `src/pages/` stay thin) |
 | Security/cache headers | `public/_headers` |
+| Deployed perf gates (`npm run perf`) | `lighthouserc.json` |
 
 ## Conventions
 
@@ -75,8 +76,9 @@ Detailed guides live in [`.agents/`](.agents/): [content model](.agents/content-
 3. Small commits, imperative messages.
 4. Verify before claiming done (`.agents/verification.md`):
    `npm run build` (0 errors/warnings), `npm run contrast`, and for
-   visual/behavioural changes `npm run preview` + Lighthouse + the 320 px /
-   keyboard checks described there.
+   visual/behavioural changes `npm run perf` (the deployed Lighthouse gate) +
+   the 320 px / keyboard checks described there. `npm run profile` when the
+   build itself gets slow.
 
 ## Extension points (already reserved)
 

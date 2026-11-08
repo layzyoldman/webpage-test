@@ -20,6 +20,8 @@ npm run dev        # dev server at http://localhost:4321
 npm run build      # astro check && astro build → dist/
 npm run preview    # serve dist/ locally
 npm run contrast   # WCAG contrast check of the design tokens
+npm run profile    # build timings: where `astro build` spent its time
+npm run perf       # optional test: Lighthouse against the DEPLOYED site
 ```
 
 ## Stack and why each dependency is here
@@ -32,6 +34,7 @@ npm run contrast   # WCAG contrast check of the design tokens
 | `@fontsource-variable/fraunces` | Self-hosted display serif (Latin subsets fetched at runtime via `unicode-range`), OFL-licensed, no CDN. "Standard" file keeps Fraunces' character axes (wonk/soft/opsz). |
 | `@fontsource-variable/space-grotesk` | Self-hosted body/UI sans (Latin subsets via `unicode-range`), OFL-licensed, no CDN. Weight-only variable file. |
 | `@astrojs/check`, `typescript` (dev) | `astro check` in `npm run build` (zero warnings enforced). |
+| `@lhci/cli` (dev) | `npm run perf` — Lighthouse against the deployed site, with score/byte-weight assertions. Dev-only: never reaches `dist/`, never runs in `npm run build`. |
 
 Nothing else. No UI framework, no CSS framework, no client JS. (Svelte will be
 added later **only** for the interactive simulations.)
@@ -40,6 +43,7 @@ added later **only** for the interactive simulations.)
 
 ```
 astro.config.ts         static output, i18n routing, sitemap
+lighthouserc.json       deployed Lighthouse gates (npm run perf)
 src/config/site.ts      NON-VISUAL parameters: identity, locales, nav, flags
 src/styles/tokens.css   VISUAL parameters: all colours/type/space/motion tokens
 src/styles/global.css   reset, typography, prose, shared primitives
@@ -109,7 +113,62 @@ on 25 Oct 2026:
 
 ⚠️ **Never measure `npm run dev`** — the dev server injects the Vite client and
 the Astro dev toolbar (~1 MB of JS) and halves the performance score. Always
-measure the built output.
+measure the built output (or the deployed site).
+
+⚠️ **The home page's wordmark write costs its score.** The write rasterises a
+~3000-unit path per frame: 0.6–1 s of main-thread blocking, documented as the
+**71–79** band in [.agents/wordmark.md](.agents/wordmark.md) — and that is
+what the deployed home measures (72 below). The 98 in the table above is a
+single local run on 25 Oct that did not reproduce it; the write is the only
+thing on the page that expensive, so `npm run perf` asserts ≥ 65 for `/pt/`
+and ≥ 95 everywhere else.
+
+Deployed measurement (GitHub Pages mirror, Lighthouse 13.6 mobile, median of
+3 runs, 8 Nov 2026):
+
+| Page | Performance | Accessibility | Best practices | SEO | Transfer |
+| --- | --- | --- | --- | --- | --- |
+| `/pt/` (home, write included) | 72 | 100 | 100 | 100 | 134 KB |
+| `/pt/projetos/` | 97 | 100 | 100 | 100 | 108 KB |
+| `/pt/noticias/apresentacao-plink/` | 98 | 100 | 100 | 100 | 104 KB |
+
+Transfer = Lighthouse `total-byte-weight` (every request, images included —
+21 KB of that on the home page, which is how it squares with the 115 KB
+excl.-images budget below).
+
+### `npm run perf` — the deployed-performance test (optional)
+
+Not part of `npm run build`; run it when you want it:
+
+```bash
+npm run perf        # collect → assert → upload (shareable report link)
+```
+
+- Collects 3 runs each of the pages listed in `lighthouserc.json`
+  (production, `https://plink.pt/pt/…` — pass `--collect.url=` if that origin
+  doesn't resolve from your network), asserts the **median**, exits 1 on a
+  regression: performance ≥ 95, a11y/best-practices/SEO ≥ 95, page transfer
+  ≤ 150 KB (`total-byte-weight`, images included).
+- Exception: the home page asserts ≥ 65 — the write's documented band above.
+  Read the uploaded report for the real number.
+- Uploads each median report to Lighthouse's temporary public storage (7 days).
+
+Point it somewhere else with `--collect.url=` (repeatable):
+
+```bash
+npm run perf -- --collect.url=https://layzyoldman.github.io/webpage-test/pt/
+npm run perf -- --collect.url=http://localhost:4321/pt/   # built output only
+```
+
+### `npm run profile` — build timings
+
+```bash
+npm run profile     # astro build --timings: phases, plugins, slowest pages
+```
+
+Prints where the build spent its time (Astro's own profiler — pages, images,
+Vite plugins, integrations). Use it when `npm run build` gets slow; it does
+not run `astro check`.
 
 Page weight (home, excluding images): **115 KB** — HTML 16 KB + CSS 8 KB + JS
 2 KB (all gzip) + Fraunces 67 KB and Space Grotesk 22 KB (woff2, Latin subsets
@@ -117,18 +176,6 @@ only; latin-ext/vietnamese stay unfetched thanks to `unicode-range`). Inside
 the 150 KB budget. (The CSS grew with the die-cut puzzle slabs — the
 extrusion filter chain — and is still well inside budget.) Images are excluded from the
 budget and are emitted by Astro as AVIF/WebP with explicit dimensions.
-
-Reproduce (Lighthouse is intentionally not a project dependency):
-
-```bash
-npm run build && npm run preview &
-npx lighthouse http://localhost:4321/pt/ \
-  --chrome-flags="--headless=new --no-sandbox" --output=json
-npm run contrast
-```
-
-(`astro preview` falls back to another port if the dev server holds 4321 —
-hit the port the preview prints, and note the dev server must not be measured.)
 
 Accessibility verified beyond Lighthouse: keyboard-only navigation (skip link
 focuses first), one `h1` per page, no heading-level jumps, landmarks, `lang`

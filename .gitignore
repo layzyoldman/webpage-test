@@ -5,6 +5,9 @@ dist/
 # dependencies
 node_modules/
 
+# lighthouse-ci reports (npm run perf)
+.lighthouseci/
+
 # logs & OS
 npm-debug.log*
 .DS_Store

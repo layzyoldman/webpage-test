@@ -1,0 +1,41 @@
+{
+  "ci": {
+    "collect": {
+      "url": [
+        "https://plink.pt/pt/",
+        "https://plink.pt/pt/projetos/",
+        "https://plink.pt/pt/noticias/apresentacao-plink/"
+      ],
+      "numberOfRuns": 3
+    },
+    "assert": {
+      "assertMatrix": [
+        {
+          "matchingUrlPattern": "/pt/$",
+          "aggregationMethod": "median",
+          "assertions": {
+            "categories:performance": ["error", { "minScore": 0.65 }],
+            "categories:accessibility": ["error", { "minScore": 0.95 }],
+            "categories:best-practices": ["error", { "minScore": 0.95 }],
+            "categories:seo": ["error", { "minScore": 0.95 }],
+            "total-byte-weight": ["error", { "maxAbsoluteNumericValue": 153600 }]
+          }
+        },
+        {
+          "matchingUrlPattern": "^(?!.*\\/pt\\/$)",
+          "aggregationMethod": "median",
+          "assertions": {
+            "categories:performance": ["error", { "minScore": 0.95 }],
+            "categories:accessibility": ["error", { "minScore": 0.95 }],
+            "categories:best-practices": ["error", { "minScore": 0.95 }],
+            "categories:seo": ["error", { "minScore": 0.95 }],
+            "total-byte-weight": ["error", { "maxAbsoluteNumericValue": 153600 }]
+          }
+        }
+      ]
+    },
+    "upload": {
+      "target": "temporary-public-storage"
+    }
+  }
+}
