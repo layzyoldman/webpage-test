@@ -3,7 +3,7 @@
 Guidance for developers (human or AI) changing this repository.
 Detailed guides live in [`.agents/`](.agents/): [content model](.agents/content-model.md),
 [i18n](.agents/i18n.md), [design tokens](.agents/design-tokens.md),
-[performance](.agents/performance.md), [verification](.agents/verification.md).
+[performance](.agents/performance.md), [motion](.agents/motion.md), [verification](.agents/verification.md).
 
 ## Priorities (in order)
 

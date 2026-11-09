@@ -64,7 +64,8 @@ Facts behind the table:
 Everything else scores 100; this one audit drags `/pt/` to 0.72–0.73
 (documented band 71–79 in [wordmark.md](wordmark.md): the ~3000-unit ink path
 is re-rasterised every frame through nested image + dash masks, once per
-strand).
+strand). Cost model, the survey of how others do it, and a costed option
+table live in [motion.md](motion.md) §1–4.
 
 | Option | What it is | Pros | Cons |
 | --- | --- | --- | --- |
