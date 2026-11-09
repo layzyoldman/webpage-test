@@ -19,26 +19,28 @@ npm run contrast     # WCAG AA for all token pairs, light + dark
 ## Visual / behavioural changes
 
 ```bash
-# the deployed site — optional test, not part of `npm run build`:
-npm run perf                          # pages/thresholds in lighthouserc.json
-npm run perf -- --collect.url=http://localhost:4321/pt/   # the local build
+# the built site — optional test, not part of `npm run build`:
+npm run build                              # perf measures dist/
+npm run perf                               # 5 pages × 3 runs, lighthouserc.json
+npm run perf:report                        # table + what needs work, per page
 ```
 
-`npm run perf` (Lighthouse via `@lhci/cli`) collects 3 runs per page, asserts
-the **median**, and prints a shareable report link (temporary public storage,
-7 days). Thresholds: performance/a11y/best-practices/SEO ≥ 95, transfer
-≤ 150 KB — except `/pt/`, which asserts ≥ 65 because the wordmark write costs
-it 0.6–1 s of main-thread blocking (the 71–79 band in [wordmark.md](wordmark.md)).
-Exit code 1 = a threshold broke.
+`npm run perf` (Lighthouse via `@lhci/cli`) serves `dist/` on its own static
+server, collects 3 runs per page, asserts the **median**, and prints a
+shareable report link (temporary public storage, 7 days). Thresholds:
+performance/a11y/best-practices/SEO ≥ 95, transfer ≤ 150 KB — except `/pt/`,
+which asserts ≥ 65 because the wordmark write costs it 0.6–1 s of main-thread
+blocking (the 71–79 band in [wordmark.md](wordmark.md)). Exit code 1 = a
+threshold broke. Baseline and the ranked backlog: [performance.md](performance.md).
 
 ⚠️ Measure the **built** output, never `npm run dev`: the dev server injects
 the Vite client + dev toolbar (~1 MB of JS) and halves the performance score.
 If the dev server holds the port, use whatever port `astro preview` prints.
 
 Targets: **≥ 95** in performance / accessibility / best practices / SEO
-(currently 97–100 on the deployed pages excluding the home's write) and
-≤ 150 KB page weight excluding images (measure: gzip(HTML) + gzip(CSS) +
-fetched woff2).
+(currently 100 on all content pages; the home page reads 0.73 on the write
+alone — see [performance.md](performance.md)) and ≤ 150 KB page weight
+excluding images (measure: gzip(HTML) + gzip(CSS) + fetched woff2).
 
 When the build itself gets slow, `npm run profile` (`astro build --timings`)
 prints where the time went — phases, plugins, slowest pages and images.

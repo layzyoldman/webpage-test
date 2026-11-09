@@ -1,10 +1,13 @@
 {
   "ci": {
     "collect": {
+      "staticDistDir": "./dist",
       "url": [
-        "https://plink.pt/pt/",
-        "https://plink.pt/pt/projetos/",
-        "https://plink.pt/pt/noticias/apresentacao-plink/"
+        "http://localhost/pt/",
+        "http://localhost/pt/projetos/",
+        "http://localhost/pt/noticias/",
+        "http://localhost/pt/noticias/apresentacao-plink/",
+        "http://localhost/pt/doacoes/"
       ],
       "numberOfRuns": 3
     },

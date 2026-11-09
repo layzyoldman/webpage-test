@@ -21,7 +21,8 @@ npm run build      # astro check && astro build → dist/
 npm run preview    # serve dist/ locally
 npm run contrast   # WCAG contrast check of the design tokens
 npm run profile    # build timings: where `astro build` spent its time
-npm run perf       # optional test: Lighthouse against the DEPLOYED site
+npm run perf       # optional test: Lighthouse against the built dist/
+npm run perf:report  # the last perf run as a table + what needs work
 ```
 
 ## Stack and why each dependency is here
@@ -43,7 +44,7 @@ added later **only** for the interactive simulations.)
 
 ```
 astro.config.ts         static output, i18n routing, sitemap
-lighthouserc.json       deployed Lighthouse gates (npm run perf)
+lighthouserc*.json     Lighthouse gates: dist/ (perf) · plink.pt (perf:site)
 src/config/site.ts      NON-VISUAL parameters: identity, locales, nav, flags
 src/styles/tokens.css   VISUAL parameters: all colours/type/space/motion tokens
 src/styles/global.css   reset, typography, prose, shared primitives
@@ -118,10 +119,10 @@ measure the built output (or the deployed site).
 ⚠️ **The home page's wordmark write costs its score.** The write rasterises a
 ~3000-unit path per frame: 0.6–1 s of main-thread blocking, documented as the
 **71–79** band in [.agents/wordmark.md](.agents/wordmark.md) — and that is
-what the deployed home measures (72 below). The 98 in the table above is a
-single local run on 25 Oct that did not reproduce it; the write is the only
-thing on the page that expensive, so `npm run perf` asserts ≥ 65 for `/pt/`
-and ≥ 95 everywhere else.
+what both the mirror and the local build measure (72 below). The 98 in the
+table above is a single local run on 25 Oct that did not reproduce it; the
+write is the only thing on the page that expensive, so `npm run perf` asserts
+≥ 65 for `/pt/` and ≥ 95 everywhere else.
 
 Deployed measurement (GitHub Pages mirror, Lighthouse 13.6 mobile, median of
 3 runs, 8 Nov 2026):
@@ -136,28 +137,33 @@ Transfer = Lighthouse `total-byte-weight` (every request, images included —
 21 KB of that on the home page, which is how it squares with the 115 KB
 excl.-images budget below).
 
-### `npm run perf` — the deployed-performance test (optional)
+### `npm run perf` — the local lab test (optional)
 
-Not part of `npm run build`; run it when you want it:
+Not part of `npm run build`; run it when you want it (it measures `dist/`, so
+build first):
 
 ```bash
-npm run perf        # collect → assert → upload (shareable report link)
+npm run build && npm run perf   # collect → assert → upload (report link)
+npm run perf:report             # the same runs as a table + what needs work
 ```
 
-- Collects 3 runs each of the pages listed in `lighthouserc.json`
-  (production, `https://plink.pt/pt/…` — pass `--collect.url=` if that origin
-  doesn't resolve from your network), asserts the **median**, exits 1 on a
-  regression: performance ≥ 95, a11y/best-practices/SEO ≥ 95, page transfer
-  ≤ 150 KB (`total-byte-weight`, images included).
-- Exception: the home page asserts ≥ 65 — the write's documented band above.
-  Read the uploaded report for the real number.
+- Serves `dist/` on its own throwaway static server and runs Lighthouse 3× on
+  each of the 5 pages in `lighthouserc.json` — mobile emulation with simulated
+  network + CPU throttling, the standard lab proxy for a slow phone.
+- Asserts the **median**: performance ≥ 95, a11y/best-practices/SEO ≥ 95,
+  page transfer ≤ 150 KB (`total-byte-weight`, images included); exits 1 on a
+  regression. Exception: the home page asserts ≥ 65 — the write's documented
+  band above; read the uploaded report for the real number.
 - Uploads each median report to Lighthouse's temporary public storage (7 days).
+- Baseline, measurement menu and the ranked list of what to address:
+  [.agents/performance.md](.agents/performance.md).
 
-Point it somewhere else with `--collect.url=` (repeatable):
+`plink.pt` does not exist yet, so there is no field data and nothing to
+load-test (load tools measure the *server*, not the page — see the guide).
+When the origin is live, the same gates run against it:
 
 ```bash
-npm run perf -- --collect.url=https://layzyoldman.github.io/webpage-test/pt/
-npm run perf -- --collect.url=http://localhost:4321/pt/   # built output only
+npm run perf:site    # lighthouserc.site.json → https://plink.pt/pt/…
 ```
 
 ### `npm run profile` — build timings

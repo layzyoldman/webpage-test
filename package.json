@@ -13,7 +13,9 @@
     "sync": "astro sync",
     "contrast": "node scripts/contrast.mjs",
     "profile": "astro build --timings",
-    "perf": "lhci autorun"
+    "perf": "lhci autorun",
+    "perf:report": "node scripts/perf-report.mjs",
+    "perf:site": "lhci autorun --config=lighthouserc.site.json"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.19",
