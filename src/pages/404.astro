@@ -20,12 +20,12 @@ const locale = LOCALES[0];
   noindex
 >
   <div class="container page">
-    <p class="code">404</p>
+    <h1 class="code">404</h1>
     <div class="langs">
       {
         LOCALES.map((l: Locale) => (
           <section class="lang" lang={HTML_LANG[l]}>
-            <h1>{t(l, 'notFound.title')}</h1>
+            <h2>{t(l, 'notFound.title')}</h2>
             <p class="lead">{t(l, 'notFound.body')}</p>
             <p>
               <a class="button" href={href(l, 'home')}>
@@ -45,8 +45,10 @@ const locale = LOCALES[0];
   }
 
   .code {
+    margin-block: 0 var(--space-m);
     font-family: var(--font-sans);
     font-size: var(--step-2);
+    font-weight: 400;
     color: var(--color-accent);
   }
 
@@ -57,7 +59,7 @@ const locale = LOCALES[0];
     margin-top: var(--space-l);
   }
 
-  .lang h1 {
+  .lang h2 {
     font-size: var(--step-3);
   }
 
