@@ -60,6 +60,13 @@ Detailed guides live in [`.agents/`](.agents/): [content model](.agents/content-
 
 ## Conventions
 
+- **Design work starts with the `frontend-design` skill**
+  (`.opencode/skills/frontend-design/SKILL.md`, Anthropic's guidance against
+  generic AI aesthetics). Load it whenever you build, add, or restyle any UI:
+  plan a distinctive look grounded in the subject, review the plan against
+  this document, then code. The skill is guidance, not override — the hard
+  invariants above (tokens, zero client JS, WCAG AA, perf budget) always win,
+  and the house style in `.agents/design-tokens.md`/`motion.md` is the brief.
 - Components: small, semantic, scoped styles; shared primitives
   (`.container`, `.prose`, `.badge`, `.grid`, `.button`) in `global.css`.
 - Accessibility is not optional: landmarks, one `h1` per page, no heading-level
@@ -71,7 +78,8 @@ Detailed guides live in [`.agents/`](.agents/): [content model](.agents/content-
 
 ## Workflow
 
-1. Read the relevant `.agents/` guide before structural changes.
+1. Read the relevant `.agents/` guide before structural changes; for any
+   visual/UI work also load the `frontend-design` skill (see Conventions).
 2. Match existing patterns before introducing new ones.
 3. Small commits, imperative messages.
 4. Verify before claiming done (`.agents/verification.md`):
