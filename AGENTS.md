@@ -87,6 +87,15 @@ Detailed guides live in [`.agents/`](.agents/): [content model](.agents/content-
    visual/behavioural changes `npm run perf` (the deployed Lighthouse gate) +
    the 320 px / keyboard checks described there. `npm run profile` when the
    build itself gets slow.
+5. **Pushing to `origin`**: both local SSH keys are read-only on
+   `ajplink/webpage` — push over HTTPS with the gh account that has admin:
+
+   ```bash
+   GH_TOKEN="$(gh auth token -u ricardo-jp-campos)" \
+   git -c credential.helper= \
+       -c 'credential.https://github.com.helper=!gh auth git-credential' \
+       push https://github.com/ajplink/webpage.git <branch>
+   ```
 
 ## Extension points (already reserved)
 

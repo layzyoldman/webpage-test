@@ -2,35 +2,76 @@
 
 ## Broken & open — 12 Nov 2026 (site scan)
 
-### In progress
+### Done (12 Nov 2026)
 
-- [ ] **`scripts/pages.sh on` cannot deploy** — it runs
-      `git push mirror master` but the repo has no local `master` branch any
-      more (work happens on `dev`/`live`); dry-run fails with
-      `src refspec master does not match any`. Fix the script to publish the
-      mainline branch.
-- [ ] **Public mirror ships the broken puzzle** — the GitHub Pages mirror
-      (the only public site) is 9 commits behind `dev`, missing `673c5eb`
-      "fix(puzzle): pieces must fit", so the jigsaw joints are visibly
-      misaligned there. Deploy once `pages.sh` works.
-- [ ] **`origin/live` behind `dev`** — 5 commits (skills, docs, perf tools,
-      404 fix) not merged into `live`; has diverged via merge commits, so it
-      needs a real merge, not a fast-forward.
+- [x] **`scripts/pages.sh on` cannot deploy** — fixed: it now publishes the
+      mainline (`PAGES_SOURCE`, default `dev`) to the mirror's `master` ref,
+      which is what `deploy.yml` listens for. Commit `b0c00eb`.
+- [x] **Public mirror shipped the broken puzzle** — deployed: mirror moved
+      `88dc58b..b0c00eb`, Pages run `43235419112` = success, verified live
+      (`joint-r` markup + `--joint-lr` CSS on the deployed home, deployed 404
+      has one h1).
+- [x] **`origin/live` behind `dev`** — merged (`Merge branch 'dev' into
+      live`, `c155664`) and pushed; `live` now carries everything on `dev`.
 
-### Open — need a decision (or Ricardo)
+### Decided (12 Nov 2026) — not yet built
 
 - [ ] **`plink.pt` is NXDOMAIN** while `SITE.url = 'https://plink.pt'` —
       canonicals, `og:url`, sitemap and JSON-LD on every page point at a dead
-      domain (set in `f4fa90e`). Either bring the DNS/statichost up, or
-      revert `SITE.url` to the current Pages URL until the domain exists.
+      domain (set in `f4fa90e`).
+      **Decision:** revert `SITE.url` to the GitHub Pages origin
+      (`https://layzyoldman.github.io` — `BASE_PATH` already supplies
+      `/webpage-test`, see `absoluteUrl()`), and keep the switch to the final
+      domain trivial: one constant in `src/config/site.ts`, overridable via a
+      `SITE_URL` build env var. A static host builds the site directly from
+      the repo until the domain is set up, so both `SITE_URL` and
+      `BASE_PATH` are deploy-time inputs there. Also update the
+      `astro.config.ts` comment that still says "plink.pt, served by
+      statichost".
+
 - [ ] **Forms post into the void** — `SITE.formUrl` is
       `https://example.org/formulario` (PLACEHOLDER): newsletter subscribe
       (news + events) and the membership form lose every submission on
-      6 pages × 2 locales. Wire a real endpoint or disable the forms.
+      6 pages × 2 locales.
+      **Decision:** there will never be a form backend for now — the site
+      stays static. v1 = a small client-side PDF module:
+      - `public/pdf-form.js` (dependency-free, self-hosted): intercepts
+        `submit` on `form[data-pdf]`, collects filled fields (labels via
+        `label[for]`/`closest('label')`; checkbox/radio groups collapsed by
+        their `<fieldset><legend>`; empty fields skipped), renders a simple
+        A4 PDF (Helvetica + WinAnsiEncoding — Portuguese fits latin1), and
+        downloads it. Visitor then emails it to `SITE.contactEmail`.
+      - Wire it on `MemberForm` + `SubscribeForm` via
+        `data-pdf-title`/`data-pdf-file` (localized in `ui.ts`, keys to add:
+        `form.pdfTitle`, `form.pdfSent`, `form.noJs`,
+        `subscribe.pdfTitle`); show a "done — send it to …" note with a
+        mailto link; without JS hide the form and show the mailto fallback
+        (reuse the `html.js` gate that `theme.js` already sets).
+      - **PDF gotchas:** JS string → bytes must be latin1 (`Uint8Array` from
+        `charCodeAt`, NOT `new Blob([string])` which UTF-8-encodes and breaks
+        every xref offset); all strings must stay ≤ charCode 255 (map
+        typographic dashes/quotes, WinAnsi ≡ latin1 for Portuguese); xref
+        offsets = cumulative string lengths (byte-exact because of latin1).
+      - Housekeeping: add `/pdf-form.js` to the AGENTS.md script exceptions
+        (list currently says "two" but has three — fix the count), cache
+        header next to `/theme.js` in `public/_headers`, and narrow
+        `form-action 'self'` (drop `https://example.org`).
+      - Verify: `pdftotext`/`pdfinfo`/`mutool` are installed — generate a
+        test PDF in Node (the builder is pure string code) and round-trip it
+        through `pdftotext`; then CDP-fill the real form on the preview
+        server and assert the note appears + the download lands.
+
+### Open — need Ricardo's data
+
 - [ ] **279 placeholder markers in the built output** — NIPC, registered
       address, IBAN/MB WAY, ~26/40 generated team portraits, guessed DL/DCI
       headcounts. The exact questions are under "Questions for Ricardo"
       below; they ship to visitors until answered.
+
+**Note for future verify runs:** `scripts/verify.mjs` can FAIL "first Tab
+focuses skip link" on the first pages when Chromium is cold (the fixed 700 ms
+load wait is too short then) — re-run before believing it; two consecutive
+clean runs on 12 Nov 2026 confirmed the site passes.
 
 **Status 25 Oct 2026 (Ricardo's pass):** everything actionable is done and
 verified (see "Verification pass" below). What remains is real-world data
