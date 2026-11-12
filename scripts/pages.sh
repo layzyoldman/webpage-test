@@ -23,7 +23,10 @@ fi
 
 case "${1:-status}" in
   on)
-    git push mirror master
+    # The repo's mainline is `dev` (there is no local `master` branch any
+    # more); the mirror keeps its own `master` as the deploy ref, which is
+    # what deploy.yml listens for. Override with PAGES_SOURCE=branch.
+    git push mirror "${PAGES_SOURCE:-dev}:master"
     if gh api "repos/$REPO/pages" -q .html_url >/dev/null 2>&1; then
       echo "pages: already enabled"
     else

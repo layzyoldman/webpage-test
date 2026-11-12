@@ -1,5 +1,37 @@
 # TODO — Plink site rework
 
+## Broken & open — 12 Nov 2026 (site scan)
+
+### In progress
+
+- [ ] **`scripts/pages.sh on` cannot deploy** — it runs
+      `git push mirror master` but the repo has no local `master` branch any
+      more (work happens on `dev`/`live`); dry-run fails with
+      `src refspec master does not match any`. Fix the script to publish the
+      mainline branch.
+- [ ] **Public mirror ships the broken puzzle** — the GitHub Pages mirror
+      (the only public site) is 9 commits behind `dev`, missing `673c5eb`
+      "fix(puzzle): pieces must fit", so the jigsaw joints are visibly
+      misaligned there. Deploy once `pages.sh` works.
+- [ ] **`origin/live` behind `dev`** — 5 commits (skills, docs, perf tools,
+      404 fix) not merged into `live`; has diverged via merge commits, so it
+      needs a real merge, not a fast-forward.
+
+### Open — need a decision (or Ricardo)
+
+- [ ] **`plink.pt` is NXDOMAIN** while `SITE.url = 'https://plink.pt'` —
+      canonicals, `og:url`, sitemap and JSON-LD on every page point at a dead
+      domain (set in `f4fa90e`). Either bring the DNS/statichost up, or
+      revert `SITE.url` to the current Pages URL until the domain exists.
+- [ ] **Forms post into the void** — `SITE.formUrl` is
+      `https://example.org/formulario` (PLACEHOLDER): newsletter subscribe
+      (news + events) and the membership form lose every submission on
+      6 pages × 2 locales. Wire a real endpoint or disable the forms.
+- [ ] **279 placeholder markers in the built output** — NIPC, registered
+      address, IBAN/MB WAY, ~26/40 generated team portraits, guessed DL/DCI
+      headcounts. The exact questions are under "Questions for Ricardo"
+      below; they ship to visitors until answered.
+
 **Status 25 Oct 2026 (Ricardo's pass):** everything actionable is done and
 verified (see "Verification pass" below). What remains is real-world data
 ("Still open — need Ricardo") and one housekeeping question (the orphan cover
