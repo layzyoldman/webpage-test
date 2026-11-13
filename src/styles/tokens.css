@@ -133,27 +133,11 @@
   --radius-m: 1.75rem;
   --radius-l: 2.5rem;
   --radius-pill: 999px;
-  /** Puzzle-piece connectors (`.grid--chain` / `.grid--puzzle`, global.css).
-      --puzzle-knob is the joint tile's size: the knob spans 60% of it along
-      the edge (a third of the piece height) and protrudes 38% of it into
-      the neighbour. Card padding is half the tile, so a socket can never
-      reach the text. */
-  --puzzle-knob: clamp(11rem, 9.5rem + 4vw, 13rem);
-  /** The seam between die-cut pieces. Not zero and not hairline: the gap is
-      where each slab's side wall shows — at gap 0 the neighbours' faces
-      cover each other's walls and the 3D dies. The knob bridges it. */
-  --puzzle-seam: 14px;
-  /** Puzzle depth — the pieces are matte extruded slabs seen at a shallow
-      angle (the grid tilts in global.css): no gloss, no gradients — flat
-      coloured faces, a flat bright chamfer on the lit edges, and a twenty-
-      pixel side wall that is always the piece's accent colour, deepening
-      toward the cut edge. One filter value: drop-shadows must follow the
-      jigsaw silhouette. */
-  --puzzle-wall-1: #9a9184;
-  --puzzle-wall-3: #2e2921;
-  --puzzle-shadow: rgb(26 29 35 / 0.18);
-  /** How thick the slab looks: the side wall sits this far below the face. */
-  --puzzle-depth: 10px;
+  /** The seam between puzzle tiles (`.grid--chain` / `.grid--puzzle`,
+      global.css): wide enough to read as the joint line between pieces,
+      tight enough to keep a row one object. The 3D die-cut piece tokens
+      (--puzzle-knob/depth/wall/shadow) are parked in archive/puzzle-3d.css. */
+  --puzzle-seam: 10px;
 
   /** Rare, barely visible lift (cards use borders, not shadows). */
   --shadow: 0 1px 2px rgb(26 29 35 / 0.06);

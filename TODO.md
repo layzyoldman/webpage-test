@@ -1,5 +1,47 @@
 # TODO — Plink site rework
 
+## Puzzle pieces → 2D squares (13 Nov 2026)
+
+Ricardo's batch: "we still need to fix the puzzle pieces. do not delete the
+3d ones, but let's try 2d. might be simpler. and lets try making them
+squares. also try to balance the font sizes."
+
+- [x] **2D square tiles replace the 3D die-cut slabs** — every piece is a
+      flat square (equal sides, house radii), the seam (`--puzzle-seam`,
+      retuned 14→10 px) is the joint line, and a piece not placed yet is a
+      ghost slot (`.grid-gap`: faint tint + hairline). The old look's
+      problems are gone: sockets were cut on EVERY edge (moth-eaten borders,
+      holes wherever no mate existed) and the knobs floated as detached
+      discs in the wide seams under the 3D tilt.
+- [x] **The 3D ones are parked, not deleted** — `archive/piece-art-3d.astro`
+      + `archive/puzzle-3d.css` (component, CSS and its tokens, restore
+      recipe in the file header).
+- [x] **Font sizes balanced** — one rhythm across all card kinds: title
+      `--step-1` (was `--step-2`), summary `--step-0`, meta/leads `--step--1`
+      (meta was `--step-0`, as loud as the body). Stacks top-aligned too —
+      the `margin-top: auto` bottom-anchoring made rows ragged.
+- [x] **Rows hold three tiles** — `.grid--chain`/`.grid--puzzle` share one
+      column rule (auto-fill, min 22rem); home shows 3 items per row (was
+      2) and short rows complete with ghost slots (news/projects: 2 + 1
+      ghost until real content arrives).
+- [x] **Sponsor tiles take their mark's hue** (`--card-accent` per sponsor,
+      the "use the palette" rule) — and `align-content: start` so the logo
+      card contents stop stretching apart inside the square.
+
+Verified: build 0 errors/0 warnings, `npm run contrast` green,
+`scripts/verify.mjs` all green against a plain static server over dist/
+(incl. the form + no-JS checks), `npm run perf`: content pages 1.00,
+`/pt/` 0.70 (the known wordmark write — same 20 long tasks as the 0.73
+baseline run; gate ≥ 65), home page weight 114 KB (CSS 8→7 KB with the 3D
+block archived). Screenshots critiqued over three passes (light, dark,
+mobile 400 px).
+
+**Notes for future UI passes:** judge and measure from a plain static
+server (`python3 -m http.server --directory dist`) — a stray `astro dev`
+on the port injects the toolbar pill into screenshots. Home rows now show
+3 items: if Ricardo prefers 2 big tiles again, that is two lines in
+`Home.astro` plus the column rule.
+
 ## Broken & open — 12 Nov 2026 (site scan)
 
 ### Done (12 Nov 2026)

@@ -142,41 +142,25 @@ main {
   list-style: none;
 }
 
-/* ------------------------------------------------------- puzzle pieces
+/* ------------------------------------------------------- puzzle tiles
 
- * Card grids can become die-cut jigsaw pieces (kits assembling, problems
- * solved together). Two variants, zero JS:
- *   .grid--chain  — a row interlocks left-right only (the home page rows);
- *   .grid--puzzle — pieces interlock in a real grid (listing pages), with
- *                   `.grid-gap` empty slots — a puzzle mid-assembly.
- * The art is vector SVG (PieceArt.astro): flat faces, the classic ball
- * joint at edge midpoints, sockets as REAL cut-outs (the mate's knob shows
- * through the hole; an unfilled socket shows the page), and a side wall
- * below — the grid tilts on ONE axis, so the bottom edge is the only 3D
- * edge and all depth/shadow lives there. The pieces scale crisply and
- * paint cheaply (no filters, no raster layers).
+ * Card grids become flat square tiles — a puzzle mid-assembly (kits
+ * assembling, problems solved together). 2D on purpose: no tilt, no
+ * extrusion, no joint geometry. Every piece is the same square (equal
+ * sides, soft corners), the seam is the joint line, and a piece not placed
+ * yet leaves a ghost slot (`.grid-gap`). The 3D die-cut system this
+ * replaced is parked in archive/puzzle-3d.css + archive/piece-art-3d.astro.
  *
  * Cards are simple and immediate: the summary is always visible, the whole
  * card is one link to its page (stretched anchor), and hover zooms it a
  * touch.
  */
 
-.grid--chain {
-  /* home rows stay rows: two big pieces across at any width that fits them */
-  grid-template-columns: repeat(auto-fit, minmax(min(28rem, 100%), 1fr));
-  column-gap: var(--puzzle-seam);
-  row-gap: var(--space-m);
-}
-
-.grid--puzzle {
-  gap: var(--puzzle-seam);
-}
-
-/* the shallow 3D view — one axis only, so the only side we see is the
-   bottom edge */
 .grid--chain,
 .grid--puzzle {
-  transform: perspective(1400px) rotateX(4deg);
+  /* three tiles across at the content width, fewer on narrow screens */
+  grid-template-columns: repeat(auto-fill, minmax(min(22rem, 100%), 1fr));
+  gap: var(--puzzle-seam);
 }
 
 ul.grid--chain > *:not(.grid-gap),
@@ -185,147 +169,21 @@ ul.grid--puzzle > *:not(.grid-gap) {
   --piece-fill: color-mix(in srgb, var(--piece-accent) 22%, var(--color-surface));
   position: relative;
   isolation: isolate;
-  padding: var(--space-l) calc(var(--space-l) * 1.15);
-  background: none;
+  aspect-ratio: 1;
+  padding: var(--space-l);
+  background-color: var(--piece-fill);
   border: none;
-  border-radius: 0;
+  border-radius: var(--radius);
   transition: transform var(--duration) var(--ease);
 }
 
-/* hover: the card zooms a touch (never lifts) */
+/* hover: the tile zooms a touch (never lifts) */
 ul.grid--chain > *:not(.grid-gap):hover,
 ul.grid--puzzle > *:not(.grid-gap):hover {
   transform: scale(1.02);
 }
 
-/* The slab art: rounded boxes for the bodies, masked spans for the joints.
-   All vector — crisp under zoom/tilt, cheap to paint. */
-.piece {
-  /* THE JOINT GEOMETRY, one definition per axis. --joint-lr/--joint-tb are
-     the classic ball joint from Ricardo's outline — big ball hugging the
-     edge, short concave scallops, narrow opening: the tile's flat side is
-     the piece edge, the ball bulges away from it. The SAME tile fills a
-     knob (masked span below) and cuts a socket (mask-composite on a body),
-     so mates are the same shape BY CONSTRUCTION — there is no second copy
-     of the path that could drift. */
-  --joint-lr: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='100' viewBox='0 0 88 100'%3E%3Cpath d='M0 22.5C0 14 14 5 22 2.6A50 50 0 1 1 22 97.4C14 95 0 86 0 77.5Z'/%3E%3C/svg%3E");
-  --joint-tb: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='88' viewBox='0 0 100 88'%3E%3Cpath d='M77.5 0C86 0 95 14 97.4 22A50 50 0 1 1 2.6 22C5 14 14 0 22.5 0Z'/%3E%3C/svg%3E");
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-
-.piece-base {
-  z-index: -2;
-}
-
-.piece-shadow,
-.piece-wall,
-.piece-face {
-  position: absolute;
-  inset: 0;
-}
-
-/* depth is bottom-only: the grid tilts on one axis */
-.piece-shadow {
-  transform: translate(0, calc(var(--puzzle-depth) + 6px));
-}
-
-.piece-wall {
-  transform: translate(0, var(--puzzle-depth));
-}
-
-/* PLACEMENT RULE — why the pieces must fit. A knob tile sits with its flat
-   side ON its own edge (left: 100% / top: 100% below); its socket cut sits
-   one --puzzle-seam OUTWARD of its own edge (mask-position below) — that is
-   exactly the MATE's edge line, because the gap between two cards is
-   --puzzle-seam (the grid's gap uses the same variable: one source). So
-   both mates place identical tiles on the same line and at the same edge
-   midpoint — the knob necessarily fills its hole, for any card size and
-   any seam width. Row stretch keeps mated cards equal in height (column
-   stretch, equal in width for top/bottom mates), so the midpoints always
-   coincide. The knob covers its hole completely: the cut opens at the
-   mate's edge while the knob's tile starts one seam earlier. */
-
-/* the bodies carry the sockets as real cut-outs: the joint tiles are
-   subtracted from a full-cover base (mask-composite), so the piece is
-   genuinely absent there — a mate's knob shows through the hole and an
-   unfilled socket shows the page. Painting the socket in the page colour
-   instead covered whatever lived under it and broke on any non-flat
-   background. NOTE the mask-position below uses plain `50%` to centre:
-   mask percentages work like background positions — (area - image) * 50%
-   — so calc(50% - 50px) would over-shift by half a tile. No filters: the
-   old masked filter stack rasterised and blurred under the grid's
-   transform; masks are cheap. */
-.piece-body {
-  --socket-cuts: var(--joint-lr), var(--joint-tb);
-  --socket-cuts-pos: calc(0px - var(--puzzle-seam)) 50%,
-    50% calc(0px - var(--puzzle-seam));
-  --socket-cuts-size: 88px 100px, 100px 88px;
-  position: absolute;
-  inset: 0;
-  border-radius: 20px;
-  mask-image: linear-gradient(#000, #000), var(--socket-cuts);
-  mask-repeat: no-repeat;
-  mask-position: center, var(--socket-cuts-pos);
-  mask-size: 100% 100%, var(--socket-cuts-size);
-  mask-composite: exclude;
-}
-
-.piece-face .piece-body,
-.piece-face .joint {
-  background-color: var(--piece-fill);
-}
-
-.piece-shadow .piece-body,
-.piece-shadow .joint {
-  background-color: var(--puzzle-shadow);
-}
-
-.piece-wall .piece-body,
-.piece-wall .joint {
-  background-color: color-mix(in srgb, var(--piece-accent) 62%, var(--puzzle-wall-1));
-}
-
-/* the knobs: the joint tile masked out of the layer's colour. The flat
-   side sits on the piece's own edge (the tile starts there), the ball
-   bulges outward — into the mate's hole. */
-.joint {
-  position: absolute;
-  mask-size: 100% 100%;
-  mask-repeat: no-repeat;
-}
-
-.joint-r {
-  left: 100%;
-  top: 50%;
-  width: 88px;
-  height: 100px;
-  transform: translateY(-50%);
-  mask-image: var(--joint-lr);
-}
-
-.joint-b {
-  top: 100%;
-  left: 50%;
-  width: 100px;
-  height: 88px;
-  transform: translateX(-50%);
-  mask-image: var(--joint-tb);
-}
-
-/* chain pieces only join left-right: no bottom knobs, one socket cut */
-ul.grid--chain .joint-b {
-  display: none;
-}
-
-ul.grid--chain .piece-body {
-  --socket-cuts: var(--joint-lr);
-  --socket-cuts-pos: calc(0px - var(--puzzle-seam)) 50%;
-  --socket-cuts-size: 88px 100px;
-}
-
-/* the whole card is the link: the title's anchor stretches over the slab.
+/* the whole card is the link: the title's anchor stretches over the tile.
    Tag links stay above it. */
 ul.grid--chain > *:not(.grid-gap) .title a::after,
 ul.grid--puzzle > *:not(.grid-gap) .title a::after {
@@ -341,9 +199,12 @@ ul.grid--puzzle > *:not(.grid-gap) .tags {
   z-index: 2;
 }
 
-/** Empty puzzle slot: a piece not placed yet (puzzle grids only). */
+/** Unplaced piece: a ghost tile where the next piece will go. */
 .grid-gap {
-  min-height: var(--space-xl);
+  aspect-ratio: 1;
+  background-color: var(--color-tint);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius);
 }
 
 @media (max-width: 30rem) {
@@ -351,7 +212,6 @@ ul.grid--puzzle > *:not(.grid-gap) .tags {
     display: none;
   }
 }
-
 /* ------------------------------------------------------- sketch surfaces */
 
 /**

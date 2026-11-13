@@ -178,11 +178,12 @@ Prints where the build spent its time (Astro's own profiler — pages, images,
 Vite plugins, integrations). Use it when `npm run build` gets slow; it does
 not run `astro check`.
 
-Page weight (home, excluding images): **115 KB** — HTML 16 KB + CSS 8 KB + JS
+Page weight (home, excluding images): **114 KB** — HTML 16 KB + CSS 7 KB + JS
 2 KB (all gzip) + Fraunces 67 KB and Space Grotesk 22 KB (woff2, Latin subsets
 only; latin-ext/vietnamese stay unfetched thanks to `unicode-range`). Inside
-the 150 KB budget. (The CSS grew with the die-cut puzzle slabs — the
-extrusion filter chain — and is still well inside budget.) Images are excluded from the
+the 150 KB budget. (The puzzle pieces are flat 2D tiles now — the old
+extrusion/joint CSS lives in `archive/puzzle-3d.css`, out of the bundle.)
+Images are excluded from the
 budget and are emitted by Astro as AVIF/WebP with explicit dimensions.
 
 Accessibility verified beyond Lighthouse: keyboard-only navigation (skip link

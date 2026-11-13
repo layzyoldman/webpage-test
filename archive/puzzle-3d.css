@@ -1,0 +1,36 @@
+/* archive/puzzle-3d.css — PARKED (2026-11-13), not dead code.
+ *
+ * The 3D die-cut jigsaw slab system ("pieces must fit" — one joint tile,
+ * one placement rule), kept intact per Ricardo: "do not delete the 3d ones".
+ * The site now uses the flat 2D square tiles ("puzzle tiles" block in
+ * src/styles/global.css). To bring the 3D pieces back:
+ *   1. paste this file's CSS back into src/styles/global.css (replacing the
+ *      "puzzle tiles" block) and put the tokens below back into
+ *      src/styles/tokens.css;
+ *   2. git mv archive/piece-art-3d.astro src/components/PieceArt.astro and
+ *      render <PieceArt /> at the top of Card.astro's slot again (and in
+ *      Sponsors.astro's logo cards);
+ *   3. the views' rows/grids work unchanged (same .grid--chain/.grid--puzzle
+ *      hooks), though the old look was tuned for 2-up home rows.
+ *
+ * The tokens this block needs, parked here so tokens.css stays clean:
+ */
+:root {
+  /** Puzzle-piece connectors. --puzzle-knob is the joint tile's size: the
+      knob spans 60% of it along the edge and protrudes 38% of it into the
+      neighbour. Card padding is half the tile, so a socket can never reach
+      the text. */
+  --puzzle-knob: clamp(11rem, 9.5rem + 4vw, 13rem);
+  /** The seam between die-cut pieces: where each slab's side wall shows. */
+  --puzzle-seam: 14px;
+  /** Puzzle depth — matte extruded slabs at a shallow angle (the grid tilts
+      below): flat coloured faces, a flat chamfer on the lit edges, a
+      twenty-pixel side wall in the piece's accent colour. */
+  --puzzle-wall-1: #9a9184;
+  --puzzle-wall-3: #2e2921;
+  --puzzle-shadow: rgb(26 29 35 / 0.18);
+  /** How thick the slab looks: the side wall sits this far below the face. */
+  --puzzle-depth: 10px;
+}
+
+/* ------------------------------------------------------- puzzle pieces
