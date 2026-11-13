@@ -1,13 +1,16 @@
 ---
 /**
  * SubscribeForm — "receive the events / the news by email", one per listing
- * page. SUBMISSION: posts to `SITE.formUrl`, the one PLACEHOLDER endpoint
- * (same story as MemberForm: one line in src/config/site.ts when the real
- * endpoint exists — or add data-netlify="true" to this <form> on Netlify).
- * Native HTML validation only (zero JavaScript); the CSP allows the form
- * action (public/_headers).
+ * page. SUBMISSION: v1 has no form backend — pdf-form.js (documented in
+ * AGENTS.md) intercepts the submit and downloads the filled fields as a
+ * small A4 PDF; the visitor emails it to SITE.contactEmail. Without
+ * JavaScript the form is hidden and the mailto fallback takes over (the
+ * `html.js` gate that theme.js sets before first paint). The list kind
+ * travels in the PDF title/filename, not in a hidden field.
+ * Native HTML validation only; form-action 'self' in public/_headers.
  */
 import { SITE, type Locale } from '../config/site';
+import { asset } from '../i18n/routes';
 import { t } from '../i18n';
 
 interface Props {
@@ -19,8 +22,13 @@ interface Props {
 const { locale, kind } = Astro.props;
 ---
 
-<form class="subscribe" action={SITE.formUrl} method="post">
-  <input type="hidden" name="tipo" value={`subscrever-${kind}`} />
+<form
+  class="subscribe"
+  method="post"
+  data-pdf
+  data-pdf-title={`${t(locale, 'subscribe.pdfTitle')} — ${t(locale, kind === 'events' ? 'nav.events' : 'nav.news')}`}
+  data-pdf-file={kind === 'events' ? 'subscricao-eventos-plink.pdf' : 'subscricao-noticias-plink.pdf'}
+>
   <h2>{t(locale, kind === 'events' ? 'subscribe.events.title' : 'subscribe.news.title')}</h2>
   <p class="note">{t(locale, 'subscribe.note')}</p>
   <div class="row">
@@ -32,17 +40,32 @@ const { locale, kind } = Astro.props;
       <button class="button" type="submit">{t(locale, 'subscribe.submit')}</button>
     </p>
   </div>
+  <p class="pdf-sent" data-pdf-sent hidden>
+    {t(locale, 'form.pdfSent')} <a href={`mailto:${SITE.contactEmail}`}>{SITE.contactEmail}</a>
+  </p>
 </form>
+
+<p class="no-js">
+  {t(locale, 'form.noJs')} <a href={`mailto:${SITE.contactEmail}`}>{SITE.contactEmail}</a>
+</p>
+
+<script is:inline src={asset('pdf-form.js')} defer></script>
 
 <style>
   .subscribe {
-    display: grid;
+    /* The PDF flow needs JavaScript: without it the form stays hidden and
+       the mailto fallback below takes over (html.js gate, set by theme.js). */
+    display: none;
     gap: var(--space-2xs);
     padding: var(--space-m);
     margin-top: var(--space-xl);
     background-color: var(--color-surface);
     border: var(--border-width) solid var(--color-border);
     border-radius: var(--radius);
+  }
+
+  html.js .subscribe {
+    display: grid;
   }
 
   .subscribe h2 {
@@ -87,5 +110,35 @@ const { locale, kind } = Astro.props;
     outline: 2px solid var(--color-focus);
     outline-offset: 2px;
     border-color: var(--color-focus);
+  }
+
+  /* Revealed by pdf-form.js after the download (never set `display` here:
+     the `hidden` attribute must keep working). */
+  .pdf-sent {
+    margin-top: var(--space-2xs);
+    padding: var(--space-2xs) var(--space-xs);
+    font-size: var(--step--1);
+    background-color: var(--color-bg);
+    border: var(--border-width) solid var(--palette-green);
+    border-radius: var(--radius-s);
+  }
+
+  .pdf-sent:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  .no-js {
+    margin-top: var(--space-xl);
+    padding: var(--space-m);
+    color: var(--color-text-muted);
+    background-color: var(--color-surface);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius);
+    font-size: var(--step--1);
+  }
+
+  html.js .no-js {
+    display: none;
   }
 </style>

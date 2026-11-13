@@ -299,9 +299,13 @@ const ui = {
     pt: 'Candidatura a sócio',
     'en-gb': 'Membership application',
   },
+  'form.pdfTitle': {
+    pt: 'Candidatura de adesão — Associação Plink',
+    'en-gb': 'Membership application — Associação Plink',
+  },
   'form.note': {
-    pt: 'Preenche e envia — respondemos em poucos dias, com um humano do outro lado.',
-    'en-gb': 'Fill it in and send — we reply within a few days, with a human on the other side.',
+    pt: 'Preenche, descarrega o PDF e envia-o para o nosso email — respondemos em poucos dias, com um humano do outro lado.',
+    'en-gb': 'Fill it in, download the PDF and email it to us — we reply within a few days, with a human on the other side.',
   },
   'form.name': { pt: 'Nome completo', 'en-gb': 'Full name' },
   'form.birth': { pt: 'Data de nascimento', 'en-gb': 'Date of birth' },
@@ -333,6 +337,14 @@ const ui = {
     'en-gb': 'I have read and accept the privacy policy. The data is used only to manage membership.',
   },
   'form.submit': { pt: 'Enviar candidatura', 'en-gb': 'Send application' },
+  'form.pdfSent': {
+    pt: 'Está feito — o PDF está no teu computador. Envia-o para',
+    'en-gb': 'Done — the PDF is on your computer. Send it to',
+  },
+  'form.noJs': {
+    pt: 'Sem JavaScript não dá para gerar o PDF — escreve-nos diretamente para',
+    'en-gb': 'Without JavaScript we cannot generate the PDF — write to us at',
+  },
 
   'subscribe.events.title': {
     pt: 'Recebe os próximos eventos por email',
@@ -348,6 +360,7 @@ const ui = {
   },
   'subscribe.email': { pt: 'O teu email', 'en-gb': 'Your email' },
   'subscribe.submit': { pt: 'Subscrever', 'en-gb': 'Subscribe' },
+  'subscribe.pdfTitle': { pt: 'Subscrição', 'en-gb': 'Subscription' },
 
   'play.title': {
     pt: 'Brincar com as ideias',

@@ -53,9 +53,17 @@ dependencies); keyboard reachability needs a manual pass:
 - One `h1` per page; no heading-level jumps.
 - First `Tab` focuses the skip link and it becomes visible.
 - Keyboard reachability of the mobile `<details>` menu and the project filters.
+- The form PDF flow: fill → submit → the PDF downloads and the "send it"
+  note appears (both forms).
+- Without JavaScript the forms hide and their mailto fallback shows.
 - No console errors.
 
 ## Regression traps to re-check after touching…
+
+- `public/pdf-form.js` → `npm run test:pdf-form` (byte-exact xref/`/Length`,
+  WinAnsi round-trip through pdfinfo/pdftotext/mutool) plus the form checks
+  in `scripts/verify.mjs`; every string must stay latin1 — building the file
+  as `new Blob([string])` UTF-8-encodes it and breaks every offset.
 
 - `src/i18n/routes.ts` → canonical + hreflang URLs in page `<head>`,
   LanguageSwitch links, sitemap alternates.

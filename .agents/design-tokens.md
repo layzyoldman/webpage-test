@@ -23,8 +23,9 @@ Components consume custom properties; nothing visual is hard-coded elsewhere
 Dark scheme: the same semantic tokens are redefined in two places —
 `@media (prefers-color-scheme: dark) :root:not([data-theme='light'])` (OS
 preference) and `:root[data-theme='dark']` (manual pin). The header toggle
-sets `data-theme` via `/theme.js` — one of the three documented client
-scripts (`/theme.js`, `/about-play.js`, `/robot.js`, see AGENTS.md); keep
+sets `data-theme` via `/theme.js` — one of the four documented client
+scripts (`/theme.js`, `/about-play.js`, `/robot.js`, `/pdf-form.js`, see
+AGENTS.md); keep
 both dark blocks in sync.
 
 Brand artwork: `--logo-ink` / `--logo-spark` colour the wordmark (nome.svg)

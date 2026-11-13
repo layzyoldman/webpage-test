@@ -12,6 +12,7 @@
     "check": "astro check",
     "sync": "astro sync",
     "contrast": "node scripts/contrast.mjs",
+  "test:pdf-form": "node scripts/pdf-form.test.mjs",
     "profile": "astro build --timings",
     "perf": "lhci autorun",
     "perf:report": "node scripts/perf-report.mjs",

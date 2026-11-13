@@ -10,8 +10,8 @@ import { render } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import Prose from '../components/Prose.astro';
 import Icon from '../components/Icon.astro';
-import PlaceholderLink from '../components/PlaceholderLink.astro';
 import PieceArt from '../components/PieceArt.astro';
+import { href } from '../i18n/routes';
 
 interface Props {
   locale: Locale;
@@ -72,7 +72,9 @@ const placeholders = [
           <h2>{t(locale, 'sponsors.become')}</h2>
           <p class="note">Dinheiro, material, espaço, tempo ou transporte — tudo conta.</p>
           <a class="button" href={`mailto:${SITE.contactEmail}`}>{t(locale, 'join.emailLabel')}</a>
-          <PlaceholderLink class="button button--ghost" {locale} href={SITE.formUrl} label={t(locale, 'join.formLink')} />
+          {/* v1 has no sponsor form: the member form (with its notes field) is
+              the one form to fill — the PDF flow ends in the same inbox. */}
+          <a class="button button--ghost" href={`${href(locale, 'join')}#join-form-title`}>{t(locale, 'join.formLink')}</a>
         </div>
       </aside>
     </div>

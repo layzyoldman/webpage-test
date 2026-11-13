@@ -12,9 +12,14 @@
  *   - no console errors / page exceptions
  *   - reduced motion: the wordmark animation resolves to its end state
  *   - keyboard: the mobile <details> menu and the project filters are operable
+ *   - forms: the PDF flow downloads the PDF and shows the "send it" note
+ *   - no-JS: the forms hide and their mailto fallback takes over
  * Exit code 1 on any failure.
  */
-import { spawn } from 'node:child_process';
+import { spawn, execFileSync } from 'node:child_process';
+import { mkdtempSync, readdirSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
 const base = (process.argv[2] ?? 'http://localhost:4321').replace(/\/$/, '');
 const PAGES = [
@@ -216,6 +221,68 @@ if (radioTab > 0) {
   report('/pt/projetos/', 'keyboard: the selection filters the grid (CSS :has)',
     hidden > 0, `${hidden} card(s) hidden`);
 }
+
+// forms: the PDF flow (fill → submit → the PDF lands + the "send it" note)
+// and the no-JS mailto fallback (public/pdf-form.js + the html.js gate).
+const dl = mkdtempSync(join(tmpdir(), 'plink-verify-dl-'));
+await cdp('Browser.setDownloadBehavior', { behavior: 'allow', downloadPath: dl, eventsEnabled: true });
+
+const formFlow = async (path, fillExpr, filename, expectText) => {
+  await cdp('Page.navigate', { url: base + path });
+  await new Promise((r) => setTimeout(r, 700));
+  report(path, 'form: the fields fill', (await js(fillExpr)) === true);
+  await js(`document.querySelector('form[data-pdf]').requestSubmit()`);
+  await new Promise((r) => setTimeout(r, 400));
+  report(path, 'form: the "send it" note appears',
+    await js(`(() => { const n = document.querySelector('[data-pdf-sent]'); return !!n && !n.hidden; })()`));
+  let landed = '';
+  for (let i = 0; i < 20 && !landed; i++) {
+    await new Promise((r) => setTimeout(r, 150));
+    landed = readdirSync(dl).find((f) => f === filename) ?? '';
+  }
+  report(path, `form: ${filename} downloads`, landed === filename, landed || 'no file');
+  if (landed) {
+    /* The label mapping (label[for] / closest('label')) once silently fell
+       back to raw field names — assert the PDF's actual text. */
+    let text = '';
+    try {
+      text = execFileSync('pdftotext', [join(dl, filename), '-'], { encoding: 'utf8' });
+    } catch (err) {
+      if (err.code === 'ENOENT') text = null; /* poppler not installed: skip */
+    }
+    report(path, 'form: the PDF carries the field labels',
+      text === null ? true : text.includes(expectText),
+      text === null ? 'pdftotext unavailable' : expectText);
+  }
+};
+
+await formFlow('/pt/tornar-me-socio/', `(() => {
+  const f = document.querySelector('form[data-pdf]');
+  f.querySelector('#nome').value = 'José Ávila — Teste 100 €';
+  f.querySelector('#email').value = 'teste@example.com';
+  f.querySelector('#notas').value = 'Nota\\ncom quebras';
+  const box = f.querySelector('input[type=checkbox][name=interesses]');
+  if (box) box.checked = true;
+  f.querySelector('input[name=consentimento]').checked = true;
+  return true;
+})()`, 'adesao-plink.pdf', 'Nome completo');
+
+await formFlow('/pt/eventos/', `(() => {
+  const f = document.querySelector('form[data-pdf]');
+  f.querySelector('input[type=email]').value = 'teste@example.com';
+  return true;
+})()`, 'subscricao-eventos-plink.pdf', 'O teu email');
+
+await cdp('Emulation.setScriptExecutionDisabled', { value: true });
+await cdp('Page.navigate', { url: base + '/pt/tornar-me-socio/' });
+await new Promise((r) => setTimeout(r, 500));
+report('/pt/tornar-me-socio/', 'no-JS: the form hides',
+  (await js(`getComputedStyle(document.querySelector('form[data-pdf]')).display`)) === 'none');
+report('/pt/tornar-me-socio/', 'no-JS: the mailto fallback shows',
+  await js(`(() => { const p = document.querySelector('.no-js');
+    return !!p && getComputedStyle(p).display !== 'none' && !!p.querySelector('a[href^="mailto:"]'); })()`));
+await cdp('Emulation.setScriptExecutionDisabled', { value: false });
+rmSync(dl, { recursive: true, force: true });
 
 console.log(failures ? `\n${failures} check(s) failed.` : '\nAll structural checks passed.');
 chrome.kill();

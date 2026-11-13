@@ -79,8 +79,6 @@ export const SITE = {
 
   /** Primary contact address. PLACEHOLDER. */
   contactEmail: 'geral@associacaoplink.pt', // PLACEHOLDER
-  /** External form for membership/project submissions (no backend in v1). PLACEHOLDER. */
-  formUrl: 'https://example.org/formulario', // PLACEHOLDER
 
   /** Social profiles (JSON-LD `sameAs`). PLACEHOLDER URLs. */
   social: [

@@ -14,9 +14,9 @@
 - [x] **`origin/live` behind `dev`** — merged (`Merge branch 'dev' into
       live`, `c155664`) and pushed; `live` now carries everything on `dev`.
 
-### Decided (12 Nov 2026) — not yet built
+### Done (13 Nov 2026)
 
-- [ ] **`plink.pt` is NXDOMAIN** while `SITE.url = 'https://plink.pt'` —
+- [x] **`plink.pt` is NXDOMAIN** while `SITE.url = 'https://plink.pt'` —
       canonicals, `og:url`, sitemap and JSON-LD on every page point at a dead
       domain (set in `f4fa90e`).
       **Decision:** revert `SITE.url` to the GitHub Pages origin
@@ -28,8 +28,16 @@
       `BASE_PATH` are deploy-time inputs there. Also update the
       `astro.config.ts` comment that still says "plink.pt, served by
       statichost".
+      **Shipped + verified (13 Nov):** `SITE.url` now defaults to the Pages
+      origin with the `SITE_URL` override; the stale comments are gone.
+      Also made the URL consumers BASE-aware (they silently assumed `/`):
+      JSON-LD `url`, robots.txt sitemap URL and the RSS channel link. Built
+      with `BASE_PATH=/webpage-test`: canonicals, hreflang, og:url, JSON-LD,
+      sitemap, robots.txt and RSS all resolve under
+      `layzyoldman.github.io/webpage-test/`, and `SITE_URL=https://plink.pt
+      npm run build` flips every one of them to the final domain.
 
-- [ ] **Forms post into the void** — `SITE.formUrl` is
+- [x] **Forms post into the void** — `SITE.formUrl` is
       `https://example.org/formulario` (PLACEHOLDER): newsletter subscribe
       (news + events) and the membership form lose every submission on
       6 pages × 2 locales.
@@ -60,6 +68,27 @@
         test PDF in Node (the builder is pure string code) and round-trip it
         through `pdftotext`; then CDP-fill the real form on the preview
         server and assert the note appears + the download lands.
+      **Shipped + verified (13 Nov):** built exactly as decided.
+      `npm run test:pdf-form` (15 checks: byte-exact xref + `/Length`,
+      WinAnsi round-trip through pdfinfo/pdftotext/mutool,2 pages), the
+      form checks now in `scripts/verify.mjs` (fill → submit → the PDF
+      lands with the right labels → the note appears; plus the no-JS
+      fallback) and `npm run perf` (all pages 1.00 except the known /pt/
+      wordmark cost at 0.73, gate ≥ 65; transfer ≤ 133 KB).
+      **Follow-ups decided while building** (reasonable calls — redo them
+      if you disagree): `SITE.formUrl` is gone (nothing posts anywhere);
+      the Sponsors card's "Preencher o formulário" points at the join form
+      (`#join-form-title`) instead of the dead external URL; `form.note`
+      copy now describes the download-then-email flow; SubscribeForm's
+      hidden `tipo` field is gone (the list kind travels in the PDF
+      title/filename).
+      **Two bugs caught during verification, both fixed with guards:**
+      `labelText` looked labels up with `getElementById(el.id)` — which
+      returns the *input*, not the `label[for]` — so text fields fell back
+      to raw names ("nome", "email") in the PDF; now matched via
+      `label.htmlFor`. And a `\n` escape-layer bug in the verify fill
+      expression made it a SyntaxError (three silent FAILs); the form
+      checks now also assert the downloaded PDF's text via pdftotext.
 
 ### Open — need Ricardo's data
 

@@ -2,15 +2,17 @@
 /**
  * MemberForm — the membership application form, ready to fill.
  *
- * SUBMISSION: posts to `SITE.formUrl`, the one PLACEHOLDER endpoint. When
- * the real endpoint exists it is one line in src/config/site.ts — or add
- * `data-netlify="true"` to this <form> on Netlify and it works unchanged.
- * Native HTML validation only (zero JavaScript); the CSP already allows the
- * form action (public/_headers).
+ * SUBMISSION: v1 has no form backend — pdf-form.js (documented in
+ * AGENTS.md) intercepts the submit, renders the filled fields as a simple
+ * A4 PDF and downloads it; the visitor then emails it to SITE.contactEmail
+ * (the note under the button says so). Without JavaScript the form is
+ * hidden and the mailto fallback below takes over — the `html.js` gate
+ * that theme.js sets before first paint. Native HTML validation only; the
+ * CSP needs no form action at all (public/_headers, form-action 'self').
  */
 import { SITE, type Locale } from '../config/site';
 import { DEPARTMENTS } from '../lib/content';
-import { href } from '../i18n/routes';
+import { href, asset } from '../i18n/routes';
 import { t } from '../i18n';
 
 interface Props {
@@ -37,7 +39,13 @@ const found = [
 ] as const;
 ---
 
-<form class="member-form" action={SITE.formUrl} method="post">
+<form
+  class="member-form"
+  method="post"
+  data-pdf
+  data-pdf-title={t(locale, 'form.pdfTitle')}
+  data-pdf-file="adesao-plink.pdf"
+>
   <p class="form-note">{t(locale, 'form.note')}</p>
 
   <div class="field-grid">
@@ -132,16 +140,32 @@ const found = [
   <p class="actions">
     <button class="button" type="submit">{t(locale, 'form.submit')}</button>
   </p>
+
+  <p class="pdf-sent" data-pdf-sent hidden>
+    {t(locale, 'form.pdfSent')} <a href={`mailto:${SITE.contactEmail}`}>{SITE.contactEmail}</a>
+  </p>
 </form>
+
+<p class="no-js">
+  {t(locale, 'form.noJs')} <a href={`mailto:${SITE.contactEmail}`}>{SITE.contactEmail}</a>
+</p>
+
+<script is:inline src={asset('pdf-form.js')} defer></script>
 
 <style>
   .member-form {
-    display: grid;
+    /* The PDF flow needs JavaScript: without it the form stays hidden and
+       the mailto fallback below takes over (html.js gate, set by theme.js). */
+    display: none;
     gap: var(--space-m);
     padding: var(--space-m);
     background-color: var(--color-surface);
     border: var(--border-bold) solid var(--palette-pink);
     border-radius: var(--radius);
+  }
+
+  html.js .member-form {
+    display: grid;
   }
 
   .form-note {
@@ -230,5 +254,32 @@ const found = [
     cursor: pointer;
     font: inherit;
     font-weight: 650;
+  }
+
+  /* Revealed by pdf-form.js after the download (never set `display` here:
+     the `hidden` attribute must keep working). */
+  .pdf-sent {
+    padding: var(--space-2xs) var(--space-xs);
+    font-size: var(--step--1);
+    background-color: var(--color-bg);
+    border: var(--border-width) solid var(--palette-green);
+    border-radius: var(--radius-s);
+  }
+
+  .pdf-sent:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  .no-js {
+    padding: var(--space-m);
+    color: var(--color-text-muted);
+    background-color: var(--color-surface);
+    border: var(--border-bold) solid var(--palette-pink);
+    border-radius: var(--radius);
+  }
+
+  html.js .no-js {
+    display: none;
   }
 </style>

@@ -16,15 +16,18 @@ Detailed guides live in [`.agents/`](.agents/): [content model](.agents/content-
 
 ## Hard invariants (do not break without an explicit decision)
 
-- **Zero client-side JavaScript — two documented exceptions.** The only
-  `<script>` in the output is JSON-LD, plus two dependency-free files,
+- **Zero client-side JavaScript — four documented exceptions.** The only
+  `<script>` in the output is JSON-LD, plus four dependency-free files,
   accepted in writing here:
   - `/theme.js` (~1 KB): pins light/dark (the theme toggle's enhancement);
   - `/about-play.js`: the About page's Newton's cradle (vanilla canvas —
     chosen over p5.js for size and speed);
   - `/robot.js` (~15 lines): publishes `--scroll` so the line-follower robot
-    accompanies the scroll in browsers without CSS scroll timelines.
-  All three degrade to a complete page without JS, and all are self-hosted
+    accompanies the scroll in browsers without CSS scroll timelines;
+  - `/pdf-form.js` (~3 KB): the forms' v1 submission — turns the filled
+    fields into an A4 PDF the visitor emails (there is no form backend);
+    without JS the forms are hidden and their mailto fallback shows.
+  All four degrade to a complete page without JS, and all are self-hosted
   (`script-src 'self'` holds).
   CSS-only solutions (`:has()` filters, `<details>` menus) cover the rest.
   Anything new must be CSS-first.
