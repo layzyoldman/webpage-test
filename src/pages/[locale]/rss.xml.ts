@@ -4,20 +4,20 @@
 import rss from '@astrojs/rss';
 import { HTML_LANG, LOCALES, SITE, type Locale } from '../../config/site';
 import { t } from '../../i18n';
-import { href } from '../../i18n/routes';
+import { href, BASE } from '../../i18n/routes';
 import { publishedNews } from '../../lib/content';
 
 export function getStaticPaths() {
   return LOCALES.map((locale) => ({ params: { locale } }));
 }
 
-export async function GET(context: { params: Record<string, string>; site?: URL }) {
-  const locale = context.params.locale as Locale;
+export async function GET({ params }: { params: Record<string, string>; site?: URL }) {
+  const locale = params.locale as Locale;
   const items = await publishedNews(locale);
   return rss({
     title: `${SITE.name} — ${t(locale, 'nav.news')}`,
     description: SITE.description[locale],
-    site: context.site ?? SITE.url,
+    site: `${SITE.url}${BASE}/`,
     items: items.map((item) => ({
       title: item.data.title,
       description: item.data.summary,

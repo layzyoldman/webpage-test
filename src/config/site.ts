@@ -48,8 +48,14 @@ export type Localized = Record<Locale, string>;
 /* --------------------------------------------------------------- identity */
 
 export const SITE = {
-  /** Public origin, no trailing slash. Custom domain served by statichost. */
-  url: 'https://plink.pt',
+  /**
+   * Public origin, no trailing slash. Default = the GitHub Pages mirror;
+   * BASE_PATH supplies the project suffix (see `absoluteUrl()` in
+   * src/i18n/routes.ts). Overridable at build time via the SITE_URL env var,
+   * so switching to the final domain (plink.pt) is a deploy-time input:
+   * `SITE_URL=https://plink.pt BASE_PATH=/ npm run build`.
+   */
+  url: process.env.SITE_URL || 'https://layzyoldman.github.io',
   /** Site name used in titles, headers and JSON-LD. */
   name: 'Associação Plink',
   /** Full legal designation. PLACEHOLDER. */

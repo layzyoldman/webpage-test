@@ -5,7 +5,7 @@
  * No third-party requests: everything is self-hosted or inline.
  */
 import { DEFAULT_LOCALE, HTML_LANG, LOCALES, SITE, type Locale } from '../config/site';
-import { absoluteUrl, asset, type RouteKey } from '../i18n/routes';
+import { absoluteUrl, asset, BASE, type RouteKey } from '../i18n/routes';
 import { t } from '../i18n';
 
 interface Props {
@@ -46,7 +46,7 @@ const jsonLd = {
   '@type': 'Organization',
   name: SITE.name,
   legalName: SITE.legalName,
-  url: `${SITE.url}/`,
+  url: `${SITE.url}${BASE}/`,
   logo: ogImage,
   email: SITE.contactEmail,
   description: SITE.description[locale],

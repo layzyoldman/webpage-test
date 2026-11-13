@@ -6,7 +6,8 @@ import sitemap from '@astrojs/sitemap';
 import { SITE, LOCALES, DEFAULT_LOCALE, HTML_LANG } from './src/config/site';
 
 export default defineConfig({
-  // Public origin of the deployed site (plink.pt, served by statichost).
+  // Public origin of the deployed site (GitHub Pages mirror by default,
+  // overridable via SITE_URL — see src/config/site.ts).
   site: SITE.url,
   // Deploy base path: '/' at a domain root, '/<repo>/' on GitHub Pages project
   // sites (the deploy workflow sets BASE_PATH from the repository name).
