@@ -1,5 +1,18 @@
 # TODO — Plink site rework
 
+## Perf log in the build (13 Nov 2026)
+
+Ricardo: "instead of always changing a file, create a script that just
+logs the perf of the website… part of the build step".
+
+- [x] `scripts/perf-log.mjs` — measures the built output per page (gzip
+      HTML/CSS/JS + fetched woff2) and appends dated rows to
+      `perf-log.jsonl`; unchanged pages are re-logged, the log never fails
+      a build, and it reports the 150 KB budget. Runs at the end of
+      `npm run build` (`astro check && astro build && node
+      scripts/perf-log.mjs`); `npm run perf:log` measures alone. The
+      hand-maintained numbers are gone from README — the log is the record.
+
 ## Puzzle pieces → the drawn shape, flat 2D (13 Nov 2026)
 
 Ricardo's follow-up: "make the cards 2d puzzle pieces. not the team ones

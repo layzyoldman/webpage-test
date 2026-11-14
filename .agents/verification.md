@@ -40,7 +40,8 @@ If the dev server holds the port, use whatever port `astro preview` prints.
 Targets: **≥ 95** in performance / accessibility / best practices / SEO
 (currently 100 on all content pages; the home page reads 0.73 on the write
 alone — see [performance.md](performance.md)) and ≤ 150 KB page weight
-excluding images (measure: gzip(HTML) + gzip(CSS) + fetched woff2).
+excluding images (measured automatically: `npm run build` appends to
+`perf-log.jsonl`; `node scripts/perf-log.mjs` measures without building).
 
 When the build itself gets slow, `npm run profile` (`astro build --timings`)
 prints where the time went — phases, plugins, slowest pages and images.
