@@ -24,12 +24,12 @@ const { Content } = await render(page);
 
 /** PLACEHOLDER sponsor marks — geometric SVG logos, one hue each. */
 const placeholders = [
-  { mark: 'M4 20 12 4l8 16z', color: 'var(--palette-blue)' },
-  { mark: 'M4 12a8 8 0 0 1 16 0 8 8 0 0 1-16 0z', color: 'var(--palette-pink)' },
-  { mark: 'M4 4h16v16H4z', color: 'var(--palette-green)' },
-  { mark: 'M4 16c4-10 12-10 16 0', color: 'var(--palette-orange)' },
-  { mark: 'M12 3l3 6 6 3-6 3-3 6-3-6-6-3 6-3z', color: 'var(--palette-yellow)' },
-  { mark: 'M5 5h6v6H5zM13 13h6v6h-6z', color: 'var(--palette-blue)' },
+  { mark: 'M4 20 12 4l8 16z', color: 'var(--palette-blue)', tint: 'var(--tint-blue)' },
+  { mark: 'M4 12a8 8 0 0 1 16 0 8 8 0 0 1-16 0z', color: 'var(--palette-pink)', tint: 'var(--tint-pink)' },
+  { mark: 'M4 4h16v16H4z', color: 'var(--palette-green)', tint: 'var(--tint-green)' },
+  { mark: 'M4 16c4-10 12-10 16 0', color: 'var(--palette-orange)', tint: 'var(--tint-orange)' },
+  { mark: 'M12 3l3 6 6 3-6 3-3 6-3-6-6-3 6-3z', color: 'var(--palette-yellow)', tint: 'var(--tint-yellow)' },
+  { mark: 'M5 5h6v6H5zM13 13h6v6h-6z', color: 'var(--palette-blue)', tint: 'var(--tint-blue)' },
 ];
 ---
 
@@ -45,7 +45,10 @@ const placeholders = [
       <ul class="logo-grid grid--puzzle">
         {
           placeholders.map((sponsor, i) => (
-            <li class="panel logo-card" style={`--card-accent: ${sponsor.color}`}>
+            <li
+              class="panel logo-card"
+              style={`--card-accent: ${sponsor.color}; --card-tint: ${sponsor.tint}`}
+            >
               <PieceArt />
               <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true">
                 <path d={sponsor.mark} fill="none" stroke={sponsor.color} stroke-width="1.8" stroke-linejoin="round" />

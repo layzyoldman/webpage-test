@@ -14,17 +14,17 @@ interface Props {
 const { locale } = Astro.props;
 
 const values = [
-  { key: 'play.valueDoing', icon: 'rocket', color: 'var(--palette-blue)' },
-  { key: 'play.valueAccess', icon: 'users', color: 'var(--palette-pink)' },
-  { key: 'play.valueOpen', icon: 'book', color: 'var(--palette-green)' },
-  { key: 'play.valueCommunity', icon: 'heart', color: 'var(--palette-orange)' },
+  { key: 'play.valueDoing', icon: 'rocket', color: 'var(--palette-blue)', tint: 'var(--tint-blue)' },
+  { key: 'play.valueAccess', icon: 'users', color: 'var(--palette-pink)', tint: 'var(--tint-pink)' },
+  { key: 'play.valueOpen', icon: 'book', color: 'var(--palette-green)', tint: 'var(--tint-green)' },
+  { key: 'play.valueCommunity', icon: 'heart', color: 'var(--palette-orange)', tint: 'var(--tint-orange)' },
 ] as const;
 ---
 
 <ul class="values">
   {
     values.map((v) => (
-      <li class="value" style={`--value-color: ${v.color}`}>
+      <li class="value" style={`--value-color: ${v.color}; --value-tint: ${v.tint}`}>
         <span class="mark" style={`--mark-color: ${v.color}; --mark-size: 3.2rem`}>
           <Icon name={v.icon} size={32} />
         </span>
@@ -49,7 +49,7 @@ const values = [
     gap: var(--space-s);
     align-items: center;
     padding: var(--space-s) var(--space-m);
-    background-color: color-mix(in srgb, var(--value-color) 12%, var(--color-surface));
+    background-color: var(--value-tint, color-mix(in srgb, var(--value-color) 12%, var(--color-surface)));
     border: var(--border-width) solid color-mix(in srgb, var(--value-color) 35%, transparent);
     border-radius: var(--radius-l);
   }

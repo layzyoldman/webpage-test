@@ -19,7 +19,7 @@ const { locale, item } = Astro.props;
 const { title, summary, date, tags } = item.data;
 ---
 
-<Card as="li" accent="var(--palette-orange)">
+<Card as="li" accent="var(--palette-orange)" tint="var(--tint-orange)">
   <h3 class="title">
     <a href={href(locale, 'news', item.slug)}>{title}</a>
   </h3>

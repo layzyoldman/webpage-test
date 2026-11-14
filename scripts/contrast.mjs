@@ -88,6 +88,14 @@ const PAIRS = [
   ['--color-accent', '--color-surface', 4.5, 'accent text on surface'],
   ['--color-focus', '--color-bg', 3, 'focus ring on page background (UI)'],
   ['--color-border', '--color-bg', 1.2, 'hairline borders visible (advisory)'],
+  /* the washes (tokens.css block 1b) carry body and muted text on every
+     piece/panel — checked per hue in both schemes */
+  ...['--tint-blue', '--tint-pink', '--tint-yellow', '--tint-green', '--tint-orange'].flatMap(
+    (tint) => [
+      ['--color-text', tint, 4.5, `body text on ${tint.slice(7)} wash`],
+      ['--color-text-muted', tint, 4.5, `muted text on ${tint.slice(7)} wash`],
+    ],
+  ),
 ];
 
 let failed = 0;

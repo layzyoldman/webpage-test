@@ -16,17 +16,25 @@ interface Props {
   ariaHidden?: boolean;
   /** Palette accent for this kind of content. */
   accent?: string;
+  /** Hand-picked wash for the piece fill (tokens.css block 1b). */
+  tint?: string;
 }
 
-const { as = 'article', dataAttrs = {}, ariaHidden, accent } = Astro.props;
+const { as = 'article', dataAttrs = {}, ariaHidden, accent, tint } = Astro.props;
 const Tag = as;
+const style = [
+  accent && `--card-accent: ${accent}`,
+  tint && `--card-tint: ${tint}`,
+]
+  .filter(Boolean)
+  .join(';');
 ---
 
 <Tag
   class="card"
   {...dataAttrs}
   aria-hidden={ariaHidden ? 'true' : undefined}
-  style={accent ? `--card-accent: ${accent}` : undefined}
+  style={style || undefined}
 ><PieceArt /><slot /></Tag>
 
 <style>

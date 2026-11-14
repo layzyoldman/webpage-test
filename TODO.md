@@ -1,5 +1,30 @@
 # TODO — Plink site rework
 
+## Colors → kit washes (13 Nov 2026)
+
+Ricardo: "use that frontend skill and get some proper colors going".
+
+- [x] **A hand-picked wash per hue** (`--tint-blue/pink/yellow/green/orange`,
+      tokens.css block 1b) replaces the generic `hue 22% on surface` mixes
+      on pieces, value panels and sponsor tiles: light = chromatic pastels
+      at one lightness (the old milk was GRAY, not pale — full chroma reads
+      as colour even light), dark = rich deep tones (navy, plum, olive,
+      forest, burnt) — the hue-on-dark mixes were the mud (the news tiles
+      literally rendered brown).
+- [x] **Consumers pass the wash explicitly** — `--card-tint` on cards,
+      `--value-tint` on the About values; the old mix survives only as a
+      fallback for custom accents. Brand hues, paper and ink are identity:
+      untouched.
+- [x] **`npm run contrast` extended** — body + muted text on all ten
+      washes. It earned its keep: the first family failed muted AA on 4 of
+      5 light washes; computed lighter+chromatic until green.
+- [x] Parked 3D tokens' dark values moved into `archive/puzzle-3d.css`
+      (the archive is self-contained).
+
+Verified: contrast green, verify.mjs green, `npm run perf` green (content
+1.00, `/pt/` 0.70), screenshots light/dark on home, events, projects,
+sponsors and the values panels.
+
 ## Perf log in the build (13 Nov 2026)
 
 Ricardo: "instead of always changing a file, create a script that just

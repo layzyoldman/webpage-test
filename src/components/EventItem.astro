@@ -22,7 +22,7 @@ const dateText = formatDateRange(locale, date, endDate);
 const isoDate = date.toISOString().slice(0, 10);
 ---
 
-<Card as="li" accent="var(--palette-blue)">
+<Card as="li" accent="var(--palette-blue)" tint="var(--tint-blue)">
   <h3 class="title">
     <a href={href(locale, 'events', event.slug)}>{title}</a>
   </h3>

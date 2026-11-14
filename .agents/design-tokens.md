@@ -33,6 +33,13 @@ so it flips to paper-white in the dark scheme. Shape language lives in
 `--radius-s/…/pill`; each department owns a palette hue via `DEPT_ACCENT`
 (src/lib/content.ts).
 
+Washes (`--tint-*`, tokens.css block 1b) are the hand-picked tint per hue:
+chromatic pastels in light, rich deep tones in dark. They carry the puzzle
+pieces, value panels and sponsor tiles — passed explicitly as
+`--card-tint` / `--value-tint`, never derived on the fly (a generic
+hue-on-dark `color-mix` turns to mud). Ink and muted text are AA on all
+ten; the contrast gate checks them.
+
 ## Rules
 
 - Contrast: every foreground/background pair must stay WCAG AA (4.5:1 text,

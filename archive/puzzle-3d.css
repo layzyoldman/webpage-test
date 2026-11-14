@@ -33,4 +33,17 @@
   --puzzle-depth: 10px;
 }
 
+/* The dark-scheme values these tokens had in the old tokens.css dark
+   blocks — paste them into the dark blocks too when restoring:
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --puzzle-wall-1: #3a4250;
+    --puzzle-wall-3: #0a0d12;
+    --puzzle-shadow: rgb(0 0 0 / 0.45);
+    --puzzle-depth: 10px;
+  }
+}
+*/
+
 /* ------------------------------------------------------- puzzle pieces

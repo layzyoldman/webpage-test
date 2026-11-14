@@ -179,7 +179,8 @@ main {
 ul.grid--chain > *:not(.grid-gap),
 ul.grid--puzzle > *:not(.grid-gap) {
   --piece-accent: var(--card-accent, var(--panel-color, var(--color-accent)));
-  --piece-fill: color-mix(in srgb, var(--piece-accent) 22%, var(--color-surface));
+  /* the hand-picked wash wins; the mix is only a fallback for custom accents */
+  --piece-fill: var(--card-tint, color-mix(in srgb, var(--piece-accent) 22%, var(--color-surface)));
   /* THE JOINT GEOMETRY, one definition per axis (Ricardo's drawing,
      scaled to the piece): --joint-span is the ball's diameter along the
      edge, --joint-depth how far it reaches (into the mate, and into its

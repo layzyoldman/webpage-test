@@ -4,3 +4,9 @@
 {"ts": "2026-11-14T00:15:01.117Z", "commit": "e120351", "page": "/pt/noticias/apresentacao-plink/", "html": 7.2, "css": 5.2, "js": 2.2, "fonts": 87.5, "total": 102.1}
 {"ts": "2026-11-14T00:15:01.117Z", "commit": "e120351", "page": "/pt/doacoes/", "html": 7.8, "css": 8, "js": 2.2, "fonts": 87.5, "total": 105.5}
 {"ts": "2026-11-14T00:15:01.117Z", "commit": "e120351", "page": "/pt/tornar-me-socio/", "html": 9.3, "css": 8, "js": 6.9, "fonts": 87.5, "total": 111.7}
+{"ts":"2026-11-14T00:27:45.759Z","commit":"aa15ef3","page":"/pt/","html":16.1,"css":5.3,"js":2.2,"fonts":87.5,"total":111.1}
+{"ts":"2026-11-14T00:27:45.759Z","commit":"aa15ef3","page":"/pt/projetos/","html":8.2,"css":8.1,"js":2.2,"fonts":87.5,"total":106}
+{"ts":"2026-11-14T00:27:45.759Z","commit":"aa15ef3","page":"/pt/noticias/","html":8,"css":8.1,"js":6.9,"fonts":87.5,"total":110.5}
+{"ts":"2026-11-14T00:27:45.759Z","commit":"aa15ef3","page":"/pt/noticias/apresentacao-plink/","html":7.2,"css":5.3,"js":2.2,"fonts":87.5,"total":102.2}
+{"ts":"2026-11-14T00:27:45.759Z","commit":"aa15ef3","page":"/pt/doacoes/","html":7.8,"css":8.1,"js":2.2,"fonts":87.5,"total":105.6}
+{"ts":"2026-11-14T00:27:45.759Z","commit":"aa15ef3","page":"/pt/tornar-me-socio/","html":9.3,"css":8.1,"js":6.9,"fonts":87.5,"total":111.8}
