@@ -1,6 +1,36 @@
 # TODO — Plink site rework
 
-## Puzzle pieces → 2D squares (13 Nov 2026)
+## Puzzle pieces → the drawn shape, flat 2D (13 Nov 2026)
+
+Ricardo's follow-up: "make the cards 2d puzzle pieces. not the team ones
+though. basically the 3d pieces plan, but with 2d pieces. should be
+easier" — the plain-square experiment below is superseded by this.
+
+- [x] **Cards are 2D jigsaw pieces again** — the drawn shape (big ball at
+      edge midpoints, short concave scallops, narrow opening: the exact
+      `--joint-lr`/`--joint-tb` tiles from the 3D plan), one face layer,
+      no tilt, no extrusion, no shadow. Fit-by-construction restored: one
+      joint tile fills the knob AND cuts the socket (mask-composite), one
+      placement rule. Padding = `--joint-depth` (the plan's "half the
+      tile") so bites can never reach text; joint scale lives in
+      `--joint-span/--joint-depth` (Sponsors shrinks both for small tiles).
+- [x] **Team cards excluded** — they were never in puzzle grids (the team
+      page uses the carousels), so there was nothing to undo; verified.
+- [x] **Plan proportions back** — 2-up rows (home and listings), empty
+      `.grid-gap` slots (knobs poke into them — mid-assembly), seam 14 px;
+      the squares' ghost slots and 3-up rows are gone.
+- **Kept from the squares batch:** the balanced type rhythm (title
+  `--step-1`, body `--step-0`, meta `--step--1`) — it reads well on the
+  big pieces too.
+
+Verified: build 0/0, contrast green, `scripts/verify.mjs` all green,
+`npm run perf` (content pages 1.00, `/pt/` 0.72 — wordmark write, gate
+≥ 65), screenshots critiqued light/dark/mobile. Two bugs caught in review
+before shipping: the joint data-URIs had not been copied into the new
+`.piece` rule (masks resolved to nothing — joints rendered as raw
+rectangles) and the art needed `z-index: -2` to sit behind the text.
+
+## Puzzle pieces → 2D squares (13 Nov 2026) — SUPERSEDED by the batch above
 
 Ricardo's batch: "we still need to fix the puzzle pieces. do not delete the
 3d ones, but let's try 2d. might be simpler. and lets try making them

@@ -49,8 +49,9 @@ so it flips to paper-white in the dark scheme. Shape language lives in
   character is the point of the serif. The system monospace stack is for
   semantic code in prose only (`.prose code`), never for design labels.
 - Shared primitives live in `global.css` (`.container`, `.prose`, `.badge`,
-  `.grid`, `.grid--chain` / `.grid--puzzle` (flat 2D square tiles +
-  `.grid-gap` ghost slots — seam from `--puzzle-seam`), `.button`,
+  `.grid`, `.grid--chain` / `.grid--puzzle` (flat 2D jigsaw pieces +
+  `.grid-gap` empty slots — joint tiles + placement rule in global.css),
+  `.button`,
   `.panel`, `.band`, `.eyebrow`, `.lead`, `.skip-link`);
   component-specific rules stay scoped inside their `.astro` file.
 - Exception to "no hard-coded colours": flag SVGs (`Flag.astro`) and the

@@ -10,6 +10,7 @@ import { render } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import Prose from '../components/Prose.astro';
 import Icon from '../components/Icon.astro';
+import PieceArt from '../components/PieceArt.astro';
 import { href } from '../i18n/routes';
 
 interface Props {
@@ -45,6 +46,7 @@ const placeholders = [
         {
           placeholders.map((sponsor, i) => (
             <li class="panel logo-card" style={`--card-accent: ${sponsor.color}`}>
+              <PieceArt />
               <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true">
                 <path d={sponsor.mark} fill="none" stroke={sponsor.color} stroke-width="1.8" stroke-linejoin="round" />
               </svg>
@@ -104,9 +106,13 @@ const placeholders = [
 
   .logo-grid {
     display: grid;
+    /* small tiles, small joints */
+    --joint-span: 3rem;
+    --joint-depth: 2.6rem;
     padding: 0;
     margin: 0;
     list-style: none;
+    grid-template-columns: repeat(auto-fill, minmax(min(22rem, 100%), 1fr));
   }
 
   .logo-card {

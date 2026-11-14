@@ -2,10 +2,11 @@
 /**
  * Card — generic bordered surface. Border, not shadow; subtle radius.
  * The palette system: each kind of content owns a hue (the card's accent).
- * Puzzle grids render it as a flat square tile (the `.grid--chain` /
- * `.grid--puzzle` rules in global.css; the old 3D die-cut slabs are parked
- * in archive/puzzle-3d.css + archive/piece-art-3d.astro).
+ * Puzzle grids render it as a flat 2D die-cut jigsaw piece (PieceArt +
+ * the `.grid--chain` / `.grid--puzzle` rules in global.css; the 3D slabs
+ * are parked in archive/puzzle-3d.css + archive/piece-art-3d.astro).
  */
+import PieceArt from './PieceArt.astro';
 interface Props {
   /** HTML tag to render ('article', 'li', 'div'…). */
   as?: 'article' | 'li' | 'div';
@@ -26,7 +27,7 @@ const Tag = as;
   {...dataAttrs}
   aria-hidden={ariaHidden ? 'true' : undefined}
   style={accent ? `--card-accent: ${accent}` : undefined}
-><slot /></Tag>
+><PieceArt /><slot /></Tag>
 
 <style>
   .card {

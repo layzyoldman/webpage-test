@@ -27,11 +27,9 @@ const [{ upcoming }, news, allProjects] = await Promise.all([
   projects(locale),
 ]);
 
-const featuredEvents = upcoming.slice(0, 3);
-const latestNews = news.slice(0, 3);
-const featuredProjects = allProjects.slice(0, 3);
-/** Ghost slots that complete a row of three tiles (a puzzle mid-assembly). */
-const fillRow = (n: number) => Array.from({ length: Math.max(0, 3 - n) });
+const featuredEvents = upcoming.slice(0, 2);
+const latestNews = news.slice(0, 2);
+const featuredProjects = allProjects.slice(0, 2);
 const leadNames = new Map<string, string[]>();
 for (const project of featuredProjects) {
   leadNames.set(project.slug, (await projectLeads(project, locale)).map((m) => m.data.name));
@@ -65,9 +63,6 @@ for (const project of featuredProjects) {
           {featuredEvents.map((event) => (
             <EventItem {locale} {event} />
           ))}
-          {fillRow(featuredEvents.length).map(() => (
-            <li class="grid-gap" aria-hidden="true"></li>
-          ))}
         </ul>
       ) : (
         <p>{t(locale, 'home.empty')}</p>
@@ -87,9 +82,6 @@ for (const project of featuredProjects) {
         <ul class="grid grid--chain">
           {latestNews.map((item) => (
             <NewsItem {locale} {item} />
-          ))}
-          {fillRow(latestNews.length).map(() => (
-            <li class="grid-gap" aria-hidden="true"></li>
           ))}
         </ul>
       ) : (
@@ -111,9 +103,6 @@ for (const project of featuredProjects) {
           {featuredProjects.map((project) => (
             <ProjectCard {locale} {project} leads={leadNames.get(project.slug) ?? []} />
           ))}
-          {fillRow(featuredProjects.length).map(() => (
-            <li class="grid-gap" aria-hidden="true"></li>
-          ))}
         </ul>
       ) : (
         <p>{t(locale, 'home.empty')}</p>
@@ -130,9 +119,9 @@ for (const project of featuredProjects) {
 </Base>
 
 <style>
-  /* Home rows are puzzle rows (.grid--chain): flat square tiles, the seam
-     as the joint line, ghost slots where pieces are still to come — the
-     geometry lives in global.css, the seam in tokens.css. */
+  /* Home rows are puzzle chains (.grid--chain): the two cards of a row
+     interlock left-right, tab into notch. The silhouette and the connect
+     geometry live in global.css + tokens.css. */
 
   .quiet-join {
     padding-block: var(--space-l);

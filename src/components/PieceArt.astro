@@ -1,0 +1,20 @@
+---
+/**
+ * PieceArt — the flat 2D die-cut jigsaw face behind a card's content.
+ *
+ * Pure structure, no geometry: one face layer (body + two joint tiles).
+ * ALL the shape lives in global.css as two data-URI tiles (--joint-lr,
+ * --joint-tb) that serve both as the knob fill (masked spans) and as the
+ * socket cut (mask-composite on the body) — so a knob and its socket are
+ * the same shape BY CONSTRUCTION and the pieces must fit (the placement
+ * rule is in global.css). Flat 2D: no tilt, no extrusion, no shadow — the
+ * 3D slab version is parked in archive/piece-art-3d.astro +
+ * archive/puzzle-3d.css.
+ */
+---
+
+<span class="piece" aria-hidden="true">
+  <span class="piece-body"></span>
+  <span class="joint joint-r"></span>
+  <span class="joint joint-b"></span>
+</span>

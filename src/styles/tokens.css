@@ -133,11 +133,12 @@
   --radius-m: 1.75rem;
   --radius-l: 2.5rem;
   --radius-pill: 999px;
-  /** The seam between puzzle tiles (`.grid--chain` / `.grid--puzzle`,
-      global.css): wide enough to read as the joint line between pieces,
-      tight enough to keep a row one object. The 3D die-cut piece tokens
-      (--puzzle-knob/depth/wall/shadow) are parked in archive/puzzle-3d.css. */
-  --puzzle-seam: 10px;
+  /** The seam between puzzle pieces (`.grid--chain` / `.grid--puzzle`,
+      global.css): the gap the knob bridges, and the reference line the
+      placement rule places socket cuts against. The 3D die-cut piece
+      tokens (--puzzle-knob/depth/wall/shadow) are parked in
+      archive/puzzle-3d.css. */
+  --puzzle-seam: 14px;
 
   /** Rare, barely visible lift (cards use borders, not shadows). */
   --shadow: 0 1px 2px rgb(26 29 35 / 0.06);
